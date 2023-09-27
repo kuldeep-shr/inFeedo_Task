@@ -12,7 +12,7 @@
 ### Set up
 
 1. First clone it
-2. After clone, run **`npm i`** for package json
+2. After clone, run **`npm i`** for installing the package json
 3. Run **`npm run create-table`** for Database creation
 4. After all this, now run **`npm run dev`** for run the project
 
