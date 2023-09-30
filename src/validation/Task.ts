@@ -1,12 +1,12 @@
 import Joi from "joi";
+import httpStatusCodes from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
 enum task_status {
   open_tasks = "open_tasks",
   inprogress_tasks = "inprogress_tasks",
   completed_tasks = "completed_tasks",
 }
-
-import { sendAPIErrorResponse } from "../utils/apiResponse";
+import apiResponse from "../utils/apiResponse";
 
 const createTaskSchema = Joi.array()
   .items(
@@ -28,22 +28,43 @@ export const createTaskSchemaValidation = (
   next: NextFunction
 ) => {
   const data = req.body;
-  const { error, value } = createTaskSchema.validate(data.tasks);
+  const { error } = createTaskSchema.validate(data.tasks);
   if (error) {
-    console.log("error", error);
-    if (error.details[0].type == "array.includesRequiredUnknowns") {
-      sendAPIErrorResponse(res, [], "Please pass atleast single task");
+    if (
+      error.details[0].type == "array.includesRequiredUnknowns" ||
+      error.details[0].type == "any.required"
+    ) {
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        error.details[0].type == "any.required"
+          ? "Please enter the request body"
+          : "Please pass atleast single task"
+      );
       return null;
     }
     if (error.details[0].type == "date.min") {
-      sendAPIErrorResponse(res, [], "Enter the Valid scheduled_date");
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        "Past date will not accept"
+      );
+
       return null;
     }
     if (error.details[0].type == "object.unknown") {
-      sendAPIErrorResponse(res, [], "Please check the api keys");
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        "Please check the api keys"
+      );
       return null;
     } else {
-      sendAPIErrorResponse(res, [], error.details[0].message);
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        error.details[0].message
+      );
       return null;
     }
   }
@@ -69,21 +90,25 @@ export const updateTaskSchemaValidation = (
   const { error, value } = updateTaskSchema.validate(data);
   if (error) {
     if (error.details[0].type == "date.min") {
-      sendAPIErrorResponse(
+      apiResponse.error(
         res,
-        [],
-        "Please Enter the valid date, we do not accept past date"
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        "Past date will not accept"
       );
       return null;
     } else if (error.details[0].type == "any.only") {
-      sendAPIErrorResponse(
+      apiResponse.error(
         res,
-        [],
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
         "Please Pass these status [open_tasks, inprogress_tasks, completed_tasks]"
       );
       return null;
     } else {
-      sendAPIErrorResponse(res, [], error.details[0].message);
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        error.details[0].message
+      );
       return null;
     }
   }
@@ -107,17 +132,29 @@ export const taskListSchemaValidation = (
 ) => {
   const data = req.body;
   const { error, value } = taskListSchema.validate(data);
+  if (Object.keys(value).length == 0) {
+    apiResponse.error(
+      res,
+      httpStatusCodes.UNPROCESSABLE_ENTITY,
+      "Please enter the request body"
+    );
+    return null;
+  }
+
   if (error) {
     if (error.details[0].type == "any.only") {
-      console.log("error", error);
-      sendAPIErrorResponse(
+      apiResponse.error(
         res,
-        [],
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
         "Please Pass these status [open_tasks, inprogress_tasks, completed_tasks]"
       );
       return null;
     } else {
-      sendAPIErrorResponse(res, [], error.details[0].message);
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        error.details[0].message
+      );
       return null;
     }
   }
@@ -125,8 +162,11 @@ export const taskListSchemaValidation = (
 };
 
 const paginationSchema = Joi.object({
-  status: Joi.array().items(Joi.string().valid(...Object.values(task_status))),
-  scheduled_at: Joi.string().allow(""),
+  status: Joi.array()
+    .items(Joi.string().valid(...Object.values(task_status)))
+    .required()
+    .optional(),
+  scheduled_at: Joi.string().allow("").required().optional(),
 });
 export const paginationSchemaValidation = (
   req: Request,
@@ -134,18 +174,21 @@ export const paginationSchemaValidation = (
   next: NextFunction
 ) => {
   const data = req.body;
-  const { error, value } = paginationSchema.validate(data);
+  const { error } = paginationSchema.validate(data);
   if (error) {
     if (error.details[0].type == "any.only") {
-      console.log("error", error);
-      sendAPIErrorResponse(
+      apiResponse.error(
         res,
-        [],
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
         "Please Pass these status [open_tasks, inprogress_tasks, completed_tasks]"
       );
       return null;
     } else {
-      sendAPIErrorResponse(res, [], error.details[0].message);
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        error.details[0].message
+      );
       return null;
     }
   }

@@ -1,11 +1,12 @@
 import Joi from "joi";
+import httpStatusCodes from "http-status-codes";
 import { Request, Response, NextFunction } from "express";
-import { sendAPIErrorResponse } from "../utils/apiResponse";
+import apiResponse from "../utils/apiResponse";
 
 const userRegisterSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().required(),
-  password: Joi.string().required(),
+  password: Joi.string().min(5).required(),
 });
 
 export const userRegisterSchemaValidation = (
@@ -14,12 +15,31 @@ export const userRegisterSchemaValidation = (
   next: NextFunction
 ) => {
   const data = req.body;
-  const { error, value } = userRegisterSchema.validate(data);
-  console.log("validation-data", data);
-
+  const { error } = userRegisterSchema.validate(data);
+  const errorType = error?.details[0].type ? error?.details[0].type : "";
   if (error) {
-    sendAPIErrorResponse(res, [], error.details[0].message);
-    return null;
+    if (["any.required", "string.empty"].includes(errorType)) {
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        "Please check API request body"
+      );
+      return null;
+    } else if (error?.details[0].type == "any.required") {
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        "Please check API request body"
+      );
+      return null;
+    } else {
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        error?.details[0].message
+      );
+      return null;
+    }
   }
   next();
 };
@@ -35,12 +55,31 @@ export const userLoginSchemaValidation = (
   next: NextFunction
 ) => {
   const data = req.body;
-  const { error, value } = userLoginSchema.validate(data);
-  console.log("validation-data", data);
-
+  const { error } = userLoginSchema.validate(data);
+  const errorType = error?.details[0].type ? error?.details[0].type : "";
   if (error) {
-    sendAPIErrorResponse(res, [], error.details[0].message);
-    return null;
+    if (["any.required", "string.empty"].includes(errorType)) {
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        "Please check API request body"
+      );
+      return null;
+    } else if (error?.details[0].type == "any.required") {
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        "Please check API request body"
+      );
+      return null;
+    } else {
+      apiResponse.error(
+        res,
+        httpStatusCodes.UNPROCESSABLE_ENTITY,
+        error?.details[0].message
+      );
+      return null;
+    }
   }
   next();
 };

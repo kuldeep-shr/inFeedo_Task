@@ -13,6 +13,7 @@ type VerifyPasswordTypes = {
   id: number;
   email: string;
   inputPassword: string;
+  hashPassword: string;
 };
 
 export { UserDetails, TokenAssignedTypes, VerifyPasswordTypes };

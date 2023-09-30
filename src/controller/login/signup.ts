@@ -1,46 +1,39 @@
-import { connection } from "../../DATABASE/database";
+import httpStatusCodes from "http-status-codes";
 import { Request, Response } from "express";
-import {
-  sendAPISuccessResponse,
-  sendAPIErrorResponse,
-} from "../../utils/apiResponse";
+import apiResponse from "../../utils/apiResponse";
 import { ApiResponse } from "./signup_types";
 import {
   hashPassword,
   verifyPassword,
   generateToken,
 } from "../../middleware/commonMiddlewares";
-import { getUserByEmail } from "../../model/User";
+import { createUserQuery, getUserByEmail } from "../../model/User";
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
-  //first check email existency
-  const isPersonExistOrNot: any = await getUserByEmail(email);
-  if (isPersonExistOrNot.length > 0) {
-    sendAPIErrorResponse(res, [], "This Email is already exist");
-    return null;
-  }
-  const getHashPassword = await hashPassword(password);
-  const sql = `
-    INSERT INTO users
-    (
-      name,
-      email,
-      password
-    )
-    VALUES(
-      ?,
-      ?,
-      ?
-    )
-  `;
-  connection.query(sql, [name, email, getHashPassword], (error, result) => {
-    if (result) {
-      const parsedDbData = JSON.parse(JSON.stringify(result));
+  try {
+    const { name, email, password } = req.body;
+    //check email existency
+    const isPersonExistOrNot: any = await getUserByEmail(email);
+    if (isPersonExistOrNot.length > 0) {
+      apiResponse.error(
+        res,
+        httpStatusCodes.CONFLICT,
+        "Email is already exist"
+      );
+      return null;
+    }
+    const getHashPassword = await hashPassword(password);
+    const response = await createUserQuery({
+      name: name,
+      email: email,
+      password: getHashPassword,
+    });
 
+    if (response) {
+      const parsedDbData = JSON.parse(JSON.stringify(response));
       const getToken = generateToken({
         id: parsedDbData.insertId,
-        secretKey: process.env.SECRET_KEY,
+        secretKey: String(process.env.SECRET_KEY),
         user: req.body,
       });
       const { ["password"]: removedValue, ...user_modified } = req.body;
@@ -50,46 +43,69 @@ export const createUser = async (req: Request, res: Response) => {
         token: getToken,
         token_validity: "24 Hours",
       };
-
-      sendAPISuccessResponse(res, sendResponse, "success");
+      apiResponse.result(
+        res,
+        "User has been created successfully",
+        sendResponse,
+        httpStatusCodes.CREATED
+      );
+      return null;
     } else {
-      console.log("er", error);
-      sendAPIErrorResponse(res, [], "Something Went Wrong");
+      apiResponse.error(
+        res,
+        httpStatusCodes.BAD_REQUEST,
+        "Something Went Wrong"
+      );
     }
-  });
+  } catch (err) {
+    apiResponse.error(res, httpStatusCodes.INTERNAL_SERVER_ERROR);
+  }
 };
 
 export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  const isPersonExistOrNot: any = await getUserByEmail(email);
-  if (isPersonExistOrNot.length == 0) {
-    sendAPISuccessResponse(
-      res,
-      [],
-      "Please first register yourself, then you can continue with Login"
-    );
-    return null;
-  }
-  const isPasswordMatchOrNot = await verifyPassword({
-    id: req.body.user.id,
-    email: req.body.user.user.email,
-    inputPassword: password,
-  });
-  if (isPasswordMatchOrNot) {
-    const getToken = generateToken({
+  try {
+    const { email, password } = req.body;
+    const user: any = await getUserByEmail(email);
+    const parsedDbData = JSON.parse(JSON.stringify(user));
+    if (user.length == 0) {
+      apiResponse.error(
+        res,
+        httpStatusCodes.BAD_REQUEST,
+        "Email not exist, Please sign up with this email"
+      );
+      return null;
+    }
+    const isPasswordMatchOrNot = await verifyPassword({
       id: req.body.user.id,
-      secretKey: process.env.SECRET_KEY,
-      user: req.body.user,
+      email: req.body.user.user.email,
+      inputPassword: password,
+      hashPassword: parsedDbData[0].password,
     });
-    const { ["password"]: removedValue, ...user_modified } = req.body.user.user;
-    const sendResponse: ApiResponse = {
-      id: req.body.user.id,
-      ...user_modified,
-      token: getToken,
-      token_validity: "24 Hours",
-    };
-    sendAPISuccessResponse(res, sendResponse, "success");
-  } else {
-    sendAPIErrorResponse(res, [], "Please check your credentials");
+    if (isPasswordMatchOrNot) {
+      const getToken = generateToken({
+        id: req.body.user.id,
+        secretKey: String(process.env.SECRET_KEY),
+        user: req.body.user,
+      });
+      const { ["password"]: removedValue, ...user_modified } =
+        req.body.user.user;
+      const sendResponse: ApiResponse = {
+        id: req.body.user.id,
+        ...user_modified,
+        token: getToken,
+        token_validity: "24 Hours",
+      };
+      apiResponse.result(
+        res,
+        "Login successfully",
+        sendResponse,
+        httpStatusCodes.OK
+      );
+      return null;
+    } else {
+      apiResponse.error(res, httpStatusCodes.BAD_REQUEST, "Incorrect Password");
+    }
+  } catch (err) {
+    apiResponse.error(res, httpStatusCodes.INTERNAL_SERVER_ERROR);
   }
 };

@@ -188,7 +188,7 @@ export const getAllTaskQuery = (arg: Task) => {
     connection.query(sql, (error, result) => {
       if (result) {
         const parsedDbData = JSON.parse(JSON.stringify(result));
-        resolve(parsedDbData);
+        return resolve(parsedDbData);
       } else {
         reject(error);
       }

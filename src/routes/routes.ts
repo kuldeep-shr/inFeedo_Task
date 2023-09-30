@@ -22,6 +22,7 @@ import {
   taskPagination,
 } from "../controller/task_crud/taskController";
 
+// router.get("/test", testRoute);
 router.post("/signup", userRegisterSchemaValidation, createUser);
 router.post("/login", userLoginSchemaValidation, verifyToken, loginUser);
 

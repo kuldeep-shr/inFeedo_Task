@@ -1,6 +1,6 @@
+import httpStatusCodes from "http-status-codes";
 import { CreateTaskApiPayload } from "./task_type";
 import { Metrics, Output } from "../../model/task";
-
 import { Request, Response } from "express";
 import {
   createTaskQuery,
@@ -9,38 +9,45 @@ import {
   getAllTaskQuery,
   getCountOfTaskDataQuery,
 } from "../../model/Task";
-import {
-  sendAPIErrorResponse,
-  sendAPISuccessResponse,
-} from "../../utils/apiResponse";
+import apiResponse from "../../utils/apiResponse";
 import { arrayToString } from "../../helper/operation";
 
-/*
-  Create the Task API
-
-*/
-
 export const createTask = async (req: Request, res: Response) => {
-  const { tasks }: CreateTaskApiPayload = req.body;
-  const tasksArrangement: any = [];
-  tasks.map((data) => {
-    return tasksArrangement.push({
-      title: data.title,
-      description: data.description,
-      scheduled_at: data.scheduled_at,
-      created_by: req.body.user.id,
-    });
-  });
   try {
+    const { tasks }: CreateTaskApiPayload = req.body;
+    const tasksArrangement: any = [];
+    tasks.map((data) => {
+      return tasksArrangement.push({
+        title: data.title,
+        description: data.description,
+        scheduled_at: data.scheduled_at,
+        created_by: req.body.user.id,
+      });
+    });
     const insertTask = await createTaskQuery(tasksArrangement);
     if (!insertTask.isError) {
-      sendAPISuccessResponse(res, [], "Task has been created successfully");
+      apiResponse.result(
+        res,
+        "Task has been created successfully",
+        insertTask,
+        httpStatusCodes.CREATED
+      );
+      return null;
     } else {
-      sendAPIErrorResponse(res, [], "Something Went Wrong");
+      apiResponse.error(
+        res,
+        httpStatusCodes.BAD_REQUEST,
+        "Something Went Wrong"
+      );
+      return null;
     }
   } catch (err) {
-    console.log(err);
-    sendAPIErrorResponse(res, [], "Something Went Wrong");
+    apiResponse.error(
+      res,
+      httpStatusCodes.BAD_REQUEST,
+      "Internal Server Error"
+    );
+    return null;
   }
 };
 
@@ -49,24 +56,39 @@ export const updateTask = async (req: Request, res: Response) => {
     const isTaskExistOrNot: any = await getTaskByIdQuery(req.body.id);
     req.body.tasks = isTaskExistOrNot[0];
     if (isTaskExistOrNot.length == 0) {
-      sendAPIErrorResponse(res, [], "This Task is not exist");
+      apiResponse.error(
+        res,
+        httpStatusCodes.NOT_FOUND,
+        "This Task is not exist"
+      );
       return null;
     }
     const updateTask = await updateTaskQuery(req.body);
     if (!updateTask.isError) {
-      sendAPISuccessResponse(res, [], "Task has been updated successfully");
+      apiResponse.result(
+        res,
+        "Task has been updated successfully",
+        [],
+        httpStatusCodes.OK
+      );
+      return null;
     } else {
-      sendAPIErrorResponse(res, [], "Something Went Wrong");
+      apiResponse.error(
+        res,
+        httpStatusCodes.BAD_REQUEST,
+        "Something Went Wrong"
+      );
+      return null;
     }
   } catch (err) {
-    console.log(err);
-    sendAPIErrorResponse(res, [], "Something Went Wrong");
+    apiResponse.error(res, httpStatusCodes.INTERNAL_SERVER_ERROR);
+    return null;
   }
 };
 
 export const getAllTask = async (req: Request, res: Response) => {
   /*
-    this method will get all of task which is assigned by you 
+    Return the list of tasks according to the created by user
   */
 
   try {
@@ -77,7 +99,7 @@ export const getAllTask = async (req: Request, res: Response) => {
       created_at,
       updated_at,
       current_page,
-      total_item = 5,
+      total_item = 5, // By default set to 5
     } = req.body;
     const currentPage =
       current_page == 0 || current_page == 1
@@ -94,9 +116,22 @@ export const getAllTask = async (req: Request, res: Response) => {
       current_page: currentPage,
       total_item: total_item,
     });
-    sendAPISuccessResponse(res, taskData, "success");
+    if (taskData.length > 0) {
+      apiResponse.result(res, "Task list", taskData, httpStatusCodes.OK);
+      return null;
+    } else {
+      apiResponse.result(
+        res,
+        "No Task list found",
+        taskData,
+        httpStatusCodes.OK
+      );
+      return null;
+    }
   } catch (err) {
-    sendAPISuccessResponse(res, [], "Something went wrong");
+    console.log(err);
+    apiResponse.error(res, httpStatusCodes.INTERNAL_SERVER_ERROR);
+    return null;
   }
 };
 
@@ -120,8 +155,15 @@ export const taskPagination = async (req: Request, res: Response) => {
         }
       : (metric as Output);
 
-    sendAPISuccessResponse(res, output, "success");
+    if (output) {
+      apiResponse.result(res, "Task list", output, httpStatusCodes.OK);
+      return null;
+    } else {
+      apiResponse.result(res, "No Task list", output, httpStatusCodes.OK);
+      return null;
+    }
   } catch (err) {
-    sendAPISuccessResponse(res, [], "Something went wrong");
+    apiResponse.error(res, httpStatusCodes.INTERNAL_SERVER_ERROR);
+    return null;
   }
 };

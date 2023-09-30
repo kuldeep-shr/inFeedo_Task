@@ -1,15 +1,36 @@
 import { connection } from "../DATABASE/database";
+import { SingleUser, CreateUser } from "./user";
 
-type SingleUserType = {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-  createdAt: string;
-  updatedAt: string;
+export const createUserQuery = (arg: CreateUser): any => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      INSERT INTO users
+      (
+        name,
+        email,
+        password
+      )
+      VALUES(
+        ?,
+        ?,
+        ?
+      )
+    `;
+    connection.query(
+      sql,
+      [arg.name, arg.email, arg.password],
+      (error, result) => {
+        if (result) {
+          return resolve(result);
+        } else {
+          return reject(error);
+        }
+      }
+    );
+  });
 };
 
-export const getUserById = (id: number): Promise<SingleUserType> => {
+export const getUserById = (id: number): Promise<SingleUser> => {
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT * FROM users WHERE id IN(?);
@@ -26,7 +47,7 @@ export const getUserById = (id: number): Promise<SingleUserType> => {
   });
 };
 
-export const getUserByEmail = (email: string): Promise<SingleUserType> => {
+export const getUserByEmail = (email: string): Promise<SingleUser> => {
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT * FROM users WHERE email LIKE ?;
