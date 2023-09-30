@@ -385,7 +385,7 @@
          }'
 
 ### FOR ENV:
-
+#### NOTE: If any changes to the variable name or adding extra variables in the `.env` file then,  also change in the file `global.d.ts`
     SECRET_KEY: <pass the JWT Secret Key>;
     PORT: <pass the PORT number>;
     DB_HOST: <pass the MySql Database Hostname>;
