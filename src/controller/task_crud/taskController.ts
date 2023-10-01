@@ -12,6 +12,10 @@ import {
 import apiResponse from "../../utils/apiResponse";
 import { arrayToString } from "../../helper/operation";
 
+export const initialRoute = (req: Request, res: Response) => {
+  apiResponse.result(res, "Task Management Service", [], httpStatusCodes.OK);
+};
+
 export const createTask = async (req: Request, res: Response) => {
   try {
     const { tasks }: CreateTaskApiPayload = req.body;
@@ -21,7 +25,7 @@ export const createTask = async (req: Request, res: Response) => {
         title: data.title,
         description: data.description,
         scheduled_at: data.scheduled_at,
-        created_by: req.body.user.id,
+        created_by: req.body.user.name == "guest" ? 999 : req.body.user.id,
       });
     });
     const insertTask = await createTaskQuery(tasksArrangement);
@@ -112,7 +116,7 @@ export const getAllTask = async (req: Request, res: Response) => {
       status: statusModified,
       created_at: created_at,
       updated_at: updated_at,
-      userId: req.body.user.id,
+      userId: req.body.user.name == "guest" ? 999 : req.body.user.id,
       current_page: currentPage,
       total_item: total_item,
     });
@@ -142,7 +146,7 @@ export const taskPagination = async (req: Request, res: Response) => {
     const taskData: any = await getCountOfTaskDataQuery({
       scheduled_at: scheduled_at,
       status: statusModified,
-      userId: req.body.user.id,
+      userId: req.body.user.name == "guest" ? 999 : req.body.user.id,
     });
     const metric: Metrics = {};
     taskData.forEach((item: any) => {

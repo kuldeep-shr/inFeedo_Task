@@ -1,0 +1,20 @@
+fix(user login): changes in message for user duplicate email and http status code
+feat(guest token): add guest token, user can contiue login with guest token withiut hassle free
+refactor: changes in code structure
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Your branch is up to date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   global.d.ts
+#	modified:   package.json
+#	modified:   src/app.ts
+#	modified:   src/controller/login/signup.ts
+#	modified:   src/controller/task_crud/taskController.ts
+#	new file:   src/guest_token/guestToken.ts
+#	modified:   src/routes/routes.ts
+#	new file:   src/test/createTask.test.ts
+#	deleted:    src/test/user.register.test.ts
+#

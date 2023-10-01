@@ -20,9 +20,10 @@ import {
   updateTask,
   getAllTask,
   taskPagination,
+  initialRoute,
 } from "../controller/task_crud/taskController";
 
-// router.get("/test", testRoute);
+router.get("/", verifyToken, initialRoute);
 router.post("/signup", userRegisterSchemaValidation, createUser);
 router.post("/login", userLoginSchemaValidation, verifyToken, loginUser);
 

@@ -30,8 +30,9 @@
     "build": "tsc",
     "start": "node ./dist/app.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'npm run build && npm run start'",
+    "guest-token": "ts-node ./src/guest_token/guestToken.ts",
     "create-table": "ts-node ./src/DATABASE/create_database.ts",
-    "test": "mocha --require ts-node/register --require tsconfig-paths/register ./src/test/user.register.test.ts --grep 'Duplicate entry of user'"
+    "test": "mocha --require ts-node/register --require tsconfig-paths/register ./src/test/**/*.ts "
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

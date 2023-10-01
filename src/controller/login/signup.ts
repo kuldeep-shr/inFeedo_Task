@@ -70,8 +70,8 @@ export const loginUser = async (req: Request, res: Response) => {
     if (user.length == 0) {
       apiResponse.error(
         res,
-        httpStatusCodes.BAD_REQUEST,
-        "Email not exist, Please sign up with this email"
+        httpStatusCodes.NOT_FOUND,
+        "Email not found, Please sign up with this email"
       );
       return null;
     }

@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/", allRoutes);
+app.use("/api/v1", allRoutes);
 
 // start the server
 app.listen(process.env.PORT, () => {
