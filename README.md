@@ -16,6 +16,15 @@
 3. Run **`npm run create-table`** for Database creation
 4. After all this, now run **`npm run dev`** for run the project
 
+### For Guest Token Creation
+
+Run **`npm run guest-token`** and it will print on the console.<br>
+To continue with hassle free login, you can create the Guest Token
+
+### For Test Cases
+
+Run **`npm run test`**
+
 ### API working structure:
 
 1.  **Register yourself**
@@ -385,7 +394,9 @@
          }'
 
 ### FOR ENV:
-#### NOTE: If any changes to the variable name or adding extra variables in the `.env` file then,  also change in the file `global.d.ts`
+
+#### NOTE: If any changes to the variable name or adding extra variables in the `.env` file then, also change in the file `global.d.ts`
+
     SECRET_KEY: <pass the JWT Secret Key>;
     PORT: <pass the PORT number>;
     DB_HOST: <pass the MySql Database Hostname>;
@@ -394,3 +405,8 @@
     DB_NAME: <pass the MySql Database name>;
     DB_TABLE_NAME_1: <pass the table name for tasks>
     DB_TABLE_NAME_2: <pass the table name for users>
+    API_ENDPOINT: <pass the api endpoint>
+    GUEST_TOKEN:  <pass the guest token>
+    GUEST_SECRET_NAME: <pass the guest secret name>
+    GUEST_SECRET_EMAIL: <pass the guest email>
+    GUEST_SECRET_PASSWORD: <pass the guest password>
