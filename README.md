@@ -2,12 +2,7 @@
 
 ### Here are some basic CRUD operation for **Task Management**.
 
-**Like**,
-
-    1) Create Task
-    2) Update Task
-    3) Get all Task
-    4) Get Pagination count of Task
+**Like**, <br> 1) Create Task <br>2) Update Task <br>3) Get all Task <br>4) Get Pagination count of Task
 
 ### Set up
 
@@ -18,8 +13,10 @@
 
 ### For Guest Token Creation
 
-Run **`npm run guest-token`** and it will print on the console.<br>
-To continue with hassle free login, you can create the Guest Token
+Run **`npm run`** &nbsp; **guest-token** and it will print JWT Token on the console.<br>
+To continue with hassle free login, you can create the Guest Token</br>
+**NOTE:** &nbsp;Don't use Guest Token for <u>**signup**</u> and <u>**Login**</u> api<br>
+<space>
 
 ### For Test Cases
 
@@ -29,11 +26,11 @@ Run **`npm run test`**
 
 1.  **Register yourself**
 
-    `API ENDPOINT:` /signup
+    **`ENDPOINT:`** &nbsp; /api/v1/signup
 
-    `API METHOD:` POST
+    **`METHOD:`** &nbsp; POST
 
-    `API Request Params:`
+    **`REQUEST`**
 
     ```
     {
@@ -43,7 +40,7 @@ Run **`npm run test`**
     }
     ```
 
-    `API Response:`
+    **`RESPONSE`**
 
     ```
     {
@@ -59,9 +56,9 @@ Run **`npm run test`**
     }
     ```
 
-    `CURL:`
+    **`CURL:`**
 
-           curl --location 'localhost:4000/signup' \
+           curl --location 'localhost:4000/api/v1/signup' \
          --header 'Content-Type: application/json' \
          --data-raw '{
              "name": "John",
@@ -73,13 +70,13 @@ Run **`npm run test`**
 
 2.  **Create Task**
 
-    `API ENDPOINT:` /create-task
+    **`ENDPOINT:`** &nbsp; /api/v1/create-task
 
-    `API METHOD:` POST
+    **`METHOD:`** &nbsp; POST
 
-    `Mandatory Fields`: title
+    **`MANDATORY FIELDS:`** &nbsp; title
 
-    `API Request Params:`
+    **`REQUEST`**
 
     ```
       {
@@ -108,7 +105,7 @@ Run **`npm run test`**
       }
     ```
 
-    `API Response:`
+    **`RESPONSE`**
 
     ```
       {
@@ -118,9 +115,9 @@ Run **`npm run test`**
       }
     ```
 
-    `CURL:`
+    **`CURL:`**
 
-         curl --location 'localhost:4000/create-task' \
+         curl --location 'localhost:4000/api/v1/create-task' \
          --header 'Content-Type: application/json' \
          --header 'Authorization: Bearer eyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXvI' \
          --data '{
@@ -152,13 +149,13 @@ Run **`npm run test`**
 
 3.  **Update Task**
 
-    `API ENDPOINT:` /update-task
+    **`ENDPOINT:`** &nbsp; /api/v1/update-task
 
-    `API METHOD:` POST
+    **`METHOD:`** &nbsp; POST
 
-    `Mandatory Fields`: id
+    **`MANDATORY FIELDS:`** &nbsp; id
 
-    `API Request Params:`
+    **`REQUEST:`**
 
     ```
     {
@@ -170,7 +167,7 @@ Run **`npm run test`**
     }
     ```
 
-    `API Response:`
+    **`RESPONSE:`**
 
     ```
       {
@@ -180,9 +177,9 @@ Run **`npm run test`**
       }
     ```
 
-    `CURL:`
+    \*\*`CURL
 
-         curl --location 'localhost:4000/update-task' \
+         curl --location 'localhost:4000/api/v1/update-task' \
          --header 'Content-Type: application/json' \
          --header 'Authorization: Bearer eyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXvI' \
          --data '{
@@ -197,11 +194,11 @@ Run **`npm run test`**
 
 4.  **Get All Task**
 
-    `API ENDPOINT:` /tasks
+    **`ENDPOINT:`** &nbsp; /api/v1/tasks
 
-    `API METHOD:` POST
+    **`METHOD:`** &nbsp; POST
 
-    `Mandatory Fields`: <NONE>
+    **`MANDATORY FIELDS:`** &nbsp; none
 
          This API will get all of the tasks according to the created by user.
          For Example, Suppose we have two User A and User B has created Four Tasks (TaskA, TaskB, TaskC & TaskD)
@@ -211,7 +208,7 @@ Run **`npm run test`**
          `Task D` created by `User B`
          then, it will show the tasks, according to the loggined user
 
-    NOTE:
+    **NOTE:**
 
          1) In scheduled_at, created_at and updated_at we can pass date and date time. Format should be for only date YYYY-MM-DD and for the date time YYYY-MM-DD HH:MM:SS.
          2) For Pagination, by default limit set up to 5. If you haven't pass the total_item key in payload.
@@ -225,7 +222,7 @@ Run **`npm run test`**
          filter by created_at
          filter by updated_at
 
-    `API Request Params:`
+    **`REQUEST:`**
 
     ```
       {
@@ -243,7 +240,7 @@ Run **`npm run test`**
       }
     ```
 
-    `API Response:`
+    **`RESPONSE:`**
 
     ```
       {
@@ -281,9 +278,9 @@ Run **`npm run test`**
       }
     ```
 
-    `CURL:`
+    **`CURL:`**
 
-         curl --location 'localhost:4000/tasks' \
+         curl --location 'localhost:4000/api/v1/tasks' \
          --header 'Content-Type: application/json' \
          --header 'Authorization: Bearer eyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXvI' \
          --data '{
@@ -302,16 +299,16 @@ Run **`npm run test`**
 
 5.  **Task Pagination Count**
 
-    `API ENDPOINT:` /tasks-pagination
+    **`ENDPOINT:`** &nbsp; /api/v1/tasks-pagination
 
-    `API METHOD:` POST
+    **`METHOD:`** &nbsp; POST
 
-    NOTE:
+    **NOTE:**
 
         1) In status key, you can pass multiple status like, ["open_tasks", "completed_tasks", "inprogress_tasks"]
         2) This API will give you the whole count of status if you haven't passed the scheduled_at and if you passed the scheduled_at then you will get the status count according to that date.
 
-    `API Request Params:`
+    **`REQUEST:`**
 
     ```
       {
@@ -324,7 +321,7 @@ Run **`npm run test`**
       }
     ```
 
-    `API Response:`
+    **`RESPONSE:`**
 
     ```
       {
@@ -338,9 +335,9 @@ Run **`npm run test`**
       }
     ```
 
-    `CURL:`
+    **`CURL:`**
 
-         curl --location 'localhost:4000/tasks-pagination' \
+         curl --location 'localhost:4000/api/v1/tasks-pagination' \
          --header 'Content-Type: application/json' \
          --header 'Authorization: Bearer eyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXvI' \
          --data '{
@@ -352,13 +349,17 @@ Run **`npm run test`**
              "scheduled_at": ""
          }'
 
-6.  **Login yourself {If JWT Token has expired}**
+####
 
-    `API ENDPOINT:` /login
+7.  **Login (If JWT Token has expired)**
 
-    `API METHOD:` POST
+    **`ENDPOINT:`** &nbsp; /api/v1/login
 
-    `API Request Params:`
+    **`METHOD:`** &nbsp; POST
+
+    **`MANDATORY FIELDS:`** &nbsp; email,&nbsp; password
+
+    **`REQUEST:`**
 
     ```
     {
@@ -367,7 +368,7 @@ Run **`npm run test`**
     }
     ```
 
-    `API Response:`
+    **`RESPONSE:`**
 
     ```
     {
@@ -383,9 +384,9 @@ Run **`npm run test`**
     }
     ```
 
-    `CURL:`
+    **`CURL:`**
 
-         curl --location 'localhost:4000/login' \
+         curl --location 'localhost:4000/api/v1/login' \
          --header 'Content-Type: application/json' \
          --header 'Authorization: Bearer eyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXvI' \
          --data-raw '{
@@ -395,7 +396,7 @@ Run **`npm run test`**
 
 ### FOR ENV:
 
-#### NOTE: If any changes to the variable name or adding extra variables in the `.env` file then, also change in the file `global.d.ts`
+#### NOTE: If any changes to the variable name or adding extra variables in the `.env` &nbsp; file then, also change in the file `global.d.ts`
 
     SECRET_KEY: <pass the JWT Secret Key>;
     PORT: <pass the PORT number>;
