@@ -28,12 +28,21 @@
   },
   "scripts": {
     "build": "tsc",
+    "prebuild": "rimraf dist/",
     "start": "node ./dist/app.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'npm run build && npm run start'",
     "guest-token": "ts-node ./src/guest_token/guestToken.ts",
     "create-table": "ts-node ./src/DATABASE/create_database.ts",
     "test": "mocha --require ts-node/register --require tsconfig-paths/register ./src/test/**/*.ts "
   },
+  "keywords": [
+    "task-management",
+    "typescript",
+    "node",
+    "mysql",
+    "express"
+  ],
+  "author": "kuldeep-shr",
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/chai": "^4.3.6",
